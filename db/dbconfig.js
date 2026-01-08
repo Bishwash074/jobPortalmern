@@ -1,6 +1,7 @@
 const {Sequelize}=require('sequelize')
+require('dotenv').config()
 
-databaseURL='postgresql://postgres:Z7MGEOjKRjgjV7uj@db.hicsktgirkcnapmaznjr.supabase.co:5432/postgres'
+databaseURL=process.env.DATABASE_URL
 
 const sequelize = new Sequelize(databaseURL, {
     dialect: 'postgres',
