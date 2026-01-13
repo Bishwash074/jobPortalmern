@@ -5,7 +5,8 @@ const { User } = require("../model")
 //create a job
 const createJob=async(req,res)=>{
   
-  const {title,description,location,salary,userId}=req.body
+  const {title,description,location,salary}=req.body
+  const userId=req.user
   if(!title||!description||!location){
     return res.status(400).json({message:"Please provide all required fields"})
   }
