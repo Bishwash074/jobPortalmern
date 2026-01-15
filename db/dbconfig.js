@@ -17,8 +17,6 @@ const sequelize = new Sequelize(databaseURL, {
 const connectedDb=async()=>{
   try{
      //  IMPORTANT — load models & relations FIRST
-    require("../model/UserModel");
-    require("../model/jobModal");
     require("../model"); // association file
     await sequelize.authenticate()
 
