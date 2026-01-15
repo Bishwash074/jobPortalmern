@@ -8,11 +8,12 @@ const app = express();
 
 // middleware
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
+require("dotenv").config();
 // connect DB
 connectedDb();
 
-// ✅ CALL SEED FUNCTION
+//  CALL SEED FUNCTION
 seedAdminUser();
 
 // routes

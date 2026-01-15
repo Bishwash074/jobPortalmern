@@ -23,11 +23,7 @@ const Job=sequelize.define("Job",{
   salary:{
     type:DataTypes.STRING,
     allowNull:true
-  },
-  userId: { // ✅ Add foreign key
-      type: DataTypes.UUID,
-      allowNull: false
-    }
+  }
 })
 
 module.exports=Job

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const registerUser=async(req,res)=>{
     const {name,email,password, role} = req.body;
 
-    console.log(req.body)
+    //console.log(req.body)
 
     
     // const name = req.body.name
@@ -54,7 +54,7 @@ const loginUser=async (req,res)=>{
     }
 
     // Generate JWT Token
-    const token = jwt.sign({userId: user.id}, "process.env.JWT_SECRET", {
+    const token = jwt.sign({userId: user.id}, process.env.JWT_SECRET, {
         expiresIn: "30d"
     })
 

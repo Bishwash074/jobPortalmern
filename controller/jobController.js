@@ -33,7 +33,8 @@ const createJob=async(req,res)=>{
 
 //get all the job
 const getAllJob=async (req,res)=>{
-  const jobs=await Job.findAll({
+  try {
+    const jobs=await Job.findAll({
     include:{
       model:User,
       attributes:["id","name","email"]
@@ -47,6 +48,11 @@ const getAllJob=async (req,res)=>{
     message:"Jobs fetched sucessfully",
     data:jobs
   })
+  } catch (error) {
+    res.status(500).json({
+      message:"Server error",error
+    })
+  }
 
 }
 
