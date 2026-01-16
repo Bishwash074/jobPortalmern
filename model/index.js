@@ -12,8 +12,8 @@ User.hasMany(Application,{foreignKey:"userId"});
 Application.belongsTo(User,{foreignKey:"userId"})
 
 // realationship between Application and Job
-Job.hasMany(Application,{foreignKey:'userId'})
-Application.belongsTo(Job,{foreignKey:'userId'})
+Job.hasMany(Application,{foreignKey:'jobId'})
+Application.belongsTo(Job,{foreignKey:'jobId'})
 
 
 module.exports={User,Job,Application}

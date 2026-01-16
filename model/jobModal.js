@@ -23,7 +23,11 @@ const Job=sequelize.define("Job",{
   salary:{
     type:DataTypes.STRING,
     allowNull:true
-  }
+  },
+  userId: {
+        type: DataTypes.UUID,
+        allowNull: false
+    }
 })
 
 module.exports=Job

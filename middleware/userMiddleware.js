@@ -16,7 +16,7 @@ const isAuthenticated = async (req, res, next) => {
   try {
     // token verify
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    console.log("DECODED:", decoded);
+    //console.log("DECODED:", decoded);
     // Check if user still exists
     const doesUserExist = await User.findByPk(decoded.userId)
     console.log(doesUserExist)
@@ -27,6 +27,7 @@ const isAuthenticated = async (req, res, next) => {
     }
     // Attach user data to request object
     req.user = doesUserExist
+    // console.log(req.user)
     next();
   } catch (error) {
     console.log("JWT ERROR:", error.message);
@@ -43,7 +44,7 @@ const isAuthenticated = async (req, res, next) => {
 const checkUserRole = (...roles) => {// rest operator =>Rest operator allows a function to accept an indefinite number of argument 
   return (req, res, next) => {
     const role = req.user.role
-    console.log(role)
+    //console.log(role)
     if (!roles.includes(role)) {
       return res.status(400).json({
         message: "Unauthorized acess- role mismatch"
