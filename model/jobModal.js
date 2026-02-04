@@ -1,33 +1,37 @@
-const {DataTypes}=require('sequelize')
+const { DataTypes } = require('sequelize')
 
-const {sequelize}=require('../db/dbconfig')
+const { sequelize } = require('../db/dbconfig')
 
-const Job=sequelize.define("Job",{
-  id:{
-    type:DataTypes.UUID,
-    primaryKey:true,
+const Job = sequelize.define("Job", {
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true,
     defaultValue: DataTypes.UUIDV4
   },
-  title:{
-    type:DataTypes.STRING,
-    allowNull:false
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  description:{
-    type:DataTypes.STRING,
-    allowNull:false
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  location:{
-    type:DataTypes.STRING,
-    allowNull:false
+  location: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  salary:{
-    type:DataTypes.STRING,
-    allowNull:true
+  salary: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  company: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
   userId: {
-        type: DataTypes.UUID,
-        allowNull: false
-    }
+    type: DataTypes.UUID,
+    allowNull: false
+  }
 })
 
-module.exports=Job
+module.exports = Job
