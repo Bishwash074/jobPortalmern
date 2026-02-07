@@ -67,7 +67,8 @@ const getApplication = async (req, res) => {
     })
   }
   return res.status(200).json({
-    message:"All application are sucesfully given"
+    message:"All application are sucesfully given",
+    application
   })
 }
 
