@@ -2,7 +2,7 @@ const express = require('express');
 const { connectedDb } = require('./db/dbconfig');
 const userRoute = require('./routes/userRoutes');
 const jobRoute = require('./routes/jobRoutes');
-const applicationRoute=require('./routes/applicationRoutes')
+const applicationRoute = require('./routes/applicationRoutes')
 const seedAdminUser = require('./adminSeed');
 const cors = require("cors")
 
@@ -14,7 +14,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // connect to frotend
 app.use(cors({
-  origin:"http://localhost:5173" //frotend Url
+  origin: "http://localhost:5173", //frotend Url
+  credentials: true, // Allow cookies and authorization headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }))
 require("dotenv").config();
 // connect DB
@@ -26,7 +29,11 @@ seedAdminUser();
 // routes
 app.use("/api/user", userRoute);
 app.use("/api/job", jobRoute);
-app.use('/api/application',applicationRoute)
+app.use('/api/application', applicationRoute)
+
+
+const paymentRoute = require("./routes/paymentRoute");
+app.use("/api/payments", paymentRoute)
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
