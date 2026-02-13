@@ -1,6 +1,7 @@
 const User = require("../model/UserModel");
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
+const sendEmail = require("../services/sendEMail");
 const registerUser = async (req, res) => {
     const { name, email, password, role } = req.body;
 
@@ -71,25 +72,27 @@ const loginUser = async (req, res) => {
 }
 
 const forgotPassword = async (req, res) => {
-    const email = req.body
-    console.log("Forget password request for email:", email)
+    const { email } = req.body;
+    console.log("Forgot password request for email:", email);
 
     try {
-        const user = await User.findOne({ where: { email: email } })
+        const user = await User.findOne({ where: { email: email } });
         if (!user) {
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ message: "User not found" });
         }
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        console.log("Otp genereated:", otp)
 
-        user.otp = otp
-        await user.save()
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log("OTP generated:", otp);
+
+        user.otp = otp;
+        await user.save();
 
         await sendEmail({
             email,
             subject: "Password Reset OTP",
             message: `Your OTP for password reset is: ${otp}`,
-        })
+        });
+
         return res.status(200).json({
             message: "OTP sent to email",
         });
@@ -97,73 +100,82 @@ const forgotPassword = async (req, res) => {
         console.error("Failed to process forgot password:", err.message);
         return res.status(500).json({ message: "Failed to send OTP" });
     }
-}
+};
+
 
 // verify otp
-exports.verifyOtp = async (req, res) => {
-    const { email, otp } = req.body
+const verifyOtp = async (req, res) => {
+    const { email, otp } = req.body;
+
     if (!email || !otp) {
         return res.status(400).json({
-            message: "Please provider email,otp"
-        })
+            message: "Please provide email and otp"
+        });
     }
-    const userExists = await User.findOne({ where: { userEmail: email } });
-    console.log(userExists)
-    if (!userExists) {
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
         return res.status(404).json({
             message: "Email is not registered"
-        })
+        });
     }
-    console.log(userExists[0].otp, otp)
-    if (userExists[0].otp !== otp * 1) {
 
-        res.status(400).json({
-            message: "Invalid otp"
-        })
-    } else {
-        // dispost the otp so cannot be used next time the same otp
-        userExists[0].otp = undefined
-        userExists[0].isOtpVerified = true
-        await userExists[0].save()
-        res.status(200).json({
-            message: "Otp is correct"
-        })
+    if (user.otp !== otp) {
+        return res.status(400).json({
+            message: "Invalid OTP"
+        });
     }
-}
-exports.resetPassword = async (req, res) => {
-    const { email, newPassword, confirmPassword } = req.body
+
+    user.isOtpVerified = true;
+    user.otp = null;
+    await user.save();
+
+    return res.status(200).json({
+        message: "OTP verified successfully"
+    });
+};
+
+const resetPassword = async (req, res) => {
+    const { email, newPassword, confirmPassword } = req.body;
+
     if (!email || !newPassword || !confirmPassword) {
         return res.status(400).json({
-            message: "Please provide email,newPassword,confirmPassword"
-        })
+            message: "Please provide all fields"
+        });
     }
+
     if (newPassword !== confirmPassword) {
         return res.status(400).json({
-            message: "newPassword and confirmPassword doesn't match"
-        })
+            message: "Passwords do not match"
+        });
     }
 
-    const userExists = await User.find({ userEmail: email }).select("+isOtpVerified")
-    if (userExists.length == 0) {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
         return res.status(404).json({
-            message: "User email not registered"
-        })
+            message: "User not found"
+        });
     }
-    console.log(userExists)
-    if (userExists[0].isOtpVerified != true) {
+
+    if (!user.isOtpVerified) {
         return res.status(403).json({
-            message: "You cannot perform this action"
-        })
+            message: "OTP not verified"
+        });
     }
 
-    userExists[0].userPassword = bcrypt.hashSync(newPassword, 10)
-    userExists[0].isOtpVerified = false;
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    await userExists[0].save()
+    user.password = hashedPassword;
+    user.isOtpVerified = false;
 
-    res.status(200).json({
+    await user.save();
+
+    return res.status(200).json({
         message: "Password changed successfully"
-    })
-}
+    });
+};
 
-module.exports = { registerUser, loginUser, forgotPassword}
+
+module.exports = { registerUser, loginUser, forgotPassword, verifyOtp, resetPassword }

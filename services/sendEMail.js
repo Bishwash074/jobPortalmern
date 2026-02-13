@@ -3,8 +3,8 @@ const nodemailer = require('nodemailer')
 // Sends an email using the configured SMTP credentials.
 // Options shape: { email, subject, message }
 const sendEmail = async (options) => {
-  const user = process.env.SMTP_USER || "ukmehta1245@gmail.com";
-  const pass = process.env.SMTP_PASS || "dpzydxscwdvmbyrj";
+  const user = process.env.SMTP_USER || "bishwashdhital73@gmail.com";
+  const pass = process.env.SMTP_PASS || "eqrr baan yxpz tibm ";
   const from = process.env.SMTP_FROM || user;
 
   const transporter = nodemailer.createTransport({
